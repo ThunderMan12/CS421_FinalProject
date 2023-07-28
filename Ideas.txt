@@ -3,3 +3,4 @@
 3. A class in python for sampleIteneraries
 4. Get login screen made
 5. Get sampleIteneraries screen made
+6. Get nav bar set up
