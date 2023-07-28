@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Profile</title>
-    </head>
-    <body>
-        
-    </body>
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+    <h2>User Profile</h2>
+    <p><strong>First Name:</strong> {{ user.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Phone:</strong> {{ user.phone }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <!-- You can display more user profile information here, retrieved from the database -->
+    <h3>Upcoming Trips</h3>
+    <ul>
+        {% for trip in upcoming_trips %}
+            <li>{{ trip.destination }} - {{ trip.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
 </html>
