@@ -1,0 +1,5 @@
+conda create -n finalProjectEnv python=3.7
+conda activate finalProjectEnv   OR    conda source finalProjectEnv
+
+To Deactivate:
+deactivate   OR   conda deactivate
