@@ -1,6 +1,34 @@
 from flask import Flask, render_template, request, redirect, url_for
 app = Flask (__name__)
 
+
+class User:
+    def __init__(self,user_id,firstname,username, lastname ,email, password, role):
+        self.id = user_id
+        self.username = username
+        self.email = email
+        self.firstname = firstname
+        self.lastname = lastname
+        self.role = role
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    def save(self):
+        with open(app.config['DATABASE_FILE'], 'a') as f:
+            f.write(f'{self.username}:{self.password}\n')
+
+    @staticmethod
+    def find_by_username(username):
+        with open(app.config['DATABASE_FILE'], 'r') as f:
+            for line in f:
+                data = line.strip().split(':')
+                if data[0] == username:
+                    return User(data[0], data[1])
+        return None
+
+
 @app.route ('/')
 def index():
     return render_template('index.html')
