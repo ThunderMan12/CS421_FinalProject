@@ -24,9 +24,17 @@
             {% if current_user.role == 'admin' %}
             <a href="#">Admin Dashboard</a>
             <a href="#">Manage Users</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{url_for('signup')}}">Register</a>
+            <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
+
         {% else %}
             <a href="#">User Dashboard</a>
             <a href="#">My Trips</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{url_for('signup')}}">Register</a>
+            <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
+
         {% endif %}
         <a href="{{ url_for('logout') }}">Logout</a>
         {% endif %}
