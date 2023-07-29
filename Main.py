@@ -92,35 +92,28 @@ def register():
 
     return redirect(url_for('userprofile', username=username))
 
-def create_default_admin():
-    # Check if the default admin account already exists
-    admin_username = 'admin'
-    admin = User.query.filter_by(username=admin_username).first()
-
-    # If the default admin account does not exist, create it
-    if not admin:
-        admin_username = 'Admin'
-        admin_email = 'admin@example.com'
-        admin_firstname = 'Admin'
-        admin_lastname = 'Account'
-        admin_password = 'admin123'  # Replace with a secure password
-        admin_role = 'Admin'
-
-        # Create and save the admin user to the database
-        new_admin = User(username=admin_username, email=admin_email, firstname=admin_firstname, 
-                         lastname=admin_lastname, password=admin_password, role=admin_role)
-        db.session.add(new_admin)
-        db.session.commit()
+@app.route('/users/<username>')
+def userprofile(username):
+    return render_template('user_profile.html', username=username)
 
 
+class Itenerary:
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    firstname = db.Column(db.String(80), nullable=False)
+    lastname = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
 
-
-
-
-
-
-
-
+    def __init__(self, username, email, firstname, lastname, password, role):
+        self.username = username
+        self.email = email
+        self.firstname = firstname
+        self.lastname = lastname
+        self.role = role
+        self.password = generate_password_hash(password)
+    pass
 
 
 
