@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
     <style>
         /* Add your custom CSS styles here */
-        
     </style>
 </head>
 <body>
@@ -16,19 +15,20 @@
     </header>
 
     <nav>
-       
-        {% if current_user.is_authenticated %}
-                {% if current_user.role == 'admin' %}
-                    <a href="#">Admin Dashboard</a>
-                    <a href="#">Manage Users</a>
-                {% else %}
-                    <a href="#">User Dashboard</a>
-                    <a href="#">My Trips</a>
-                {% endif %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-            {% endif %}
+        {% if current_user == undefined%}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{url_for('login')}}">Register</a>
+        <a href="{{url_for('signup')}}"></a>
+        {% else %}
+            {% if current_user.role == 'admin' %}
+            <a href="#">Admin Dashboard</a>
+            <a href="#">Manage Users</a>
+        {% else %}
+            <a href="#">User Dashboard</a>
+            <a href="#">My Trips</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
     </nav>
 
     <section>
