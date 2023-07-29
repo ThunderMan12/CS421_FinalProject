@@ -7,6 +7,12 @@ app.config['SECRET_KEY'] = 'your_secret_key'  # Set a secret key for session man
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # Change to your desired SQL database URI
 db = SQLAlchemy(app)
 
+from flask_sqlalchemy import SQLAlchemy
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'  # Replace with your database URI
+db = SQLAlchemy(app)
+
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -95,7 +101,7 @@ def index():
 def login():
     return render_template('login.html')
 
-@app.route ('/itineraries')
+@app.route ('/itianeraries')
 def itineraries():
     return render_template('sampleIteneraries.html')
 

@@ -7,6 +7,54 @@
         <title>Contact Us</title>
     </head>
     <body>
-        
+        <!-- Message Form -->
+        <h2>Send a Message</h2>
+        <form action="/send_message" method="post">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" cols="50" required></textarea>
+            <br>
+            <input type="submit" value="Send Message">
+        </form>
+
+        <!-- Trip Request Form -->
+        <h2>Trip Request</h2>
+        <form action="/trip_request" method="post">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <br>
+            <label for="trip_type">Trip Type:</label>
+            <select id="trip_type" name="trip_type" required>
+                <option value="sightseeing">Sightseeing</option>
+                <option value="adventure">Adventure</option>
+                <option value="relaxation">Relaxation</option>
+                <!-- Add more options as needed -->
+            </select>
+            <br>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required>
+            <br>
+            <label for="travel_dates">Preferred Travel Dates:</label>
+            <input type="text" id="travel_dates" name="travel_dates" required>
+            <br>
+            <label for="number_of_travelers">Number of Travelers:</label>
+            <input type="number" id="number_of_travelers" name="number_of_travelers" required>
+            <br>
+            <label for="special_requests">Special Requests:</label>
+            <textarea id="special_requests" name="special_requests" rows="4" cols="50"></textarea>
+            <br>
+            <input type="submit" value="Submit Trip Request">
+        </form>
     </body>
 </html>
