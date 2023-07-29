@@ -28,6 +28,51 @@ class User:
                     return User(data[0], data[1])
         return None
 
+@app.route('/login', methods=['POST'])
+def logins():
+    username = request.form['username']
+    password = request.form['password']
+
+    user = User.find_by_username(username)
+
+    if user:
+        if user.check_password(password):
+            return redirect(url_for('userprofile', username=username))
+        else:
+            return render_template('index.html', error='Invalid password')
+    else:
+        return render_template('index.html', error='Invalid username')
+
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.form['username']
+    password = request.form['password']
+
+    # Check if username already exists
+    existing_user = User.find_by_username(username)
+    if existing_user:
+        return render_template('index.html', error='Username already exists')
+
+    # Verify password requirements
+    if not re.search(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$', password):
+        return render_template('index.html', error='Invalid password. It must contain at least one lowercase letter, one uppercase letter, and end with a number.')
+
+    try:
+        new_user = User(username=username, password=password)
+        new_user.save()
+    except Exception as e:
+        return render_template('index.html', error='An error occurred while creating the account.')
+
+    return redirect(url_for('userprofile', username=username))
+
+@app.route('/users/<username>')
+def userprofile(username):
+    return render_template('user_profile.html', username=username)
+
+
+
+
+
 
 @app.route ('/')
 def index():
@@ -44,6 +89,10 @@ def itineraries():
 @app.route ('/myprofile')
 def myprofile():
     return render_template('userProfile.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 
 
 

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
     <style>
         body {
@@ -99,18 +97,22 @@
     </style>
 </head>
 <body>
-    
-    <h1>Login</h1>
+    <h1>Sign Up</h1>
     {% if error %}
         <div class="error">{{ error }}</div>
     {% endif %}
-    <form action="/login" method="post">
+    <form method="POST" action="/register">
+        <label for="firstname">First Name:</label>
+        <input type="text" name="firstname" id="firstname" required>
+        <label for="lastname">Last Name:</label>
+        <input type="text" name="lastname" id="lastname" required>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required>
         <label for="password">Password:</label>
         <input type="password" name="password" id="password" required>
-        <input type="submit" value="Login">
+        <input type="submit" value="Register">
     </form>
-    <a href="/signup">Sign Up</a>
 </body>
 </html>
