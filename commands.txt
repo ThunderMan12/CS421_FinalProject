@@ -3,3 +3,7 @@ conda activate finalProjectEnv   OR    conda source finalProjectEnv
 
 To Deactivate:
 deactivate   OR   conda deactivate
+
+To Run flask environment:
+python Main.py
+

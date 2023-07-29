@@ -17,10 +17,18 @@
 
     <nav>
        
-        <a href="index.html">Home</a>
-        <a href="sampleIteneraries.html">Explore</a>
-        <a href="#">Destinations</a>
-        <a href="#">Contact</a>
+        {% if current_user.is_authenticated %}
+                {% if current_user.role == 'admin' %}
+                    <a href="#">Admin Dashboard</a>
+                    <a href="#">Manage Users</a>
+                {% else %}
+                    <a href="#">User Dashboard</a>
+                    <a href="#">My Trips</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
     </nav>
 
     <section>
