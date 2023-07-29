@@ -1,10 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for
-app = Flask (__name__)
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'  # Set a secret key for session management
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # Change to your desired SQL database URI
+db = SQLAlchemy(app)
 
 
-class User:
-    def __init__(self,user_id,firstname,username, lastname ,email, password, role):
-        self.id = user_id
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    firstname = db.Column(db.String(80), nullable=False)
+    lastname = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+
+    def __init__(self, username, email, firstname, lastname, password, role):
         self.username = username
         self.email = email
         self.firstname = firstname
