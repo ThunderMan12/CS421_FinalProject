@@ -17,8 +17,9 @@
     <nav>
         {% if current_user == undefined%}
         <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{url_for('login')}}">Register</a>
-        <a href="{{url_for('signup')}}"></a>
+        <a href="{{url_for('signup')}}">Register</a>
+        <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
+
         {% else %}
             {% if current_user.role == 'admin' %}
             <a href="#">Admin Dashboard</a>

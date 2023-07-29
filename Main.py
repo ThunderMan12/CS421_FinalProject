@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 
 # Define the User model
 class User(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -32,7 +33,8 @@ class User(db.Model):
 
 # Check if the database file exists, and if not, create it along with tables
 if not os.path.exists('users.db'):
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
     def save(self):
         with open(app.config['DATABASE_FILE'], 'a') as f:
