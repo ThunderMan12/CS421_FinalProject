@@ -91,6 +91,25 @@ def userprofile(username):
     return render_template('user_profile.html', username=username)
 
 
+class Itenerary:
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    firstname = db.Column(db.String(80), nullable=False)
+    lastname = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+
+    def __init__(self, username, email, firstname, lastname, password, role):
+        self.username = username
+        self.email = email
+        self.firstname = firstname
+        self.lastname = lastname
+        self.role = role
+        self.password = generate_password_hash(password)
+    pass
+
+
 
 
 
