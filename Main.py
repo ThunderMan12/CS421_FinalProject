@@ -40,6 +40,42 @@ class User(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+    
+    def getUsername(self):
+        return self.username
+    
+    def getEmail(self):
+        return self.email
+    
+    def getFirstName(self):
+        return self.firstname
+    
+    def getLastName(self):
+        return self.lastname
+    
+    def getRole(self):
+        return self.role
+    
+    def getPassword(self):
+        return self.password
+
+    def setUsername(self, username):
+        self.username = username
+    
+    def setEmail(self, email):
+        self.email = email
+    
+    def setFirstName(self, firstname):
+        self.firstname = firstname
+    
+    def setLastName(self, lastname):
+        self.lastname = lastname
+    
+    def setRole(self, role):
+        self.role = role
+    
+    def setPassword(self, password):
+        self.password = password
 
 
 # Check if the database file exists, and if not, create it along with tables
@@ -51,20 +87,34 @@ if not os.path.exists('users.db'):
         with open(app.config['DATABASE_FILE'], 'a') as f:
             f.write(f'{self.username}:{self.password}\n')
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def logins():
-    username = request.form['username']
-    password = request.form['password']
+    if request.methed == 'POST':
 
-    user = User.find_by_username(username)
+        username = request.form['username']
+        password = request.form['password']
 
-    if user:
-        if user.check_password(password):
-            return redirect(url_for('userprofile', username=username))
+       
+
+        if not username or not password:
+            flash('Please enter both username and password')
+            return render_template('login.html')
+            
+        user = User.find_by_username(username)
+
+        if user:
+            if user.check_password(password):
+                return redirect(url_for('userprofile', role=user.getRole()))
+
+            else:
+                flash('Invalid password')
+                return redirect('/login')
+                
         else:
-            return render_template('login.html', error='Invalid password')
+            flash('Invalid username')
+            return redirect('/login')
     else:
-        return render_template('login.html', error='Invalid username')
+        return redirect('/login')
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -96,10 +146,8 @@ def create_default_admin():
     # Check if the default admin account already exists
     admin_username = 'admin'
     admin = User.query.filter_by(username=admin_username).first()
-    print("yur")
     # If the default admin account does not exist, create it
     if not admin:
-        print("hello")
         admin_username = 'admin'
         admin_email = 'admin@example.com'
         admin_firstname = 'Admin'
@@ -140,7 +188,7 @@ class Itenerary:
     lastname = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, username, email, firstname, lastname, password, role):
+    def __init__(self, username, email, firstname, lastname, role):
         self.username = username
         self.email = email
         self.firstname = firstname
@@ -155,7 +203,14 @@ class Itenerary:
 
 @app.route('/users/<username>')
 def userprofile(username):
-    return render_template('index.html', username=username)
+    user = User.find_by_username(username)
+
+    if user:
+        return render_template(login.html, user=user)
+
+    else:
+
+        return render_template('error.html', error='User not found')
 
 @app.route ('/')
 def index():
