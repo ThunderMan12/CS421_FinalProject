@@ -113,17 +113,6 @@ def create_default_admin():
         db.session.add(new_admin)
         db.session.commit()
 
-
-
-
-
-
-
-
-
-
-
-
 class Itenerary:
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
