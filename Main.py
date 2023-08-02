@@ -177,6 +177,14 @@ def myprofile():
 def signup():
     return render_template('signup.html')
 
+@app.route('/manageusers')
+def manageusers():
+    return render_template('manageusers.html')
+
+@app.route('/adminDashboard')
+def adminDashboard():
+    return render_template('adminDashboard.html')
+
 
 
 
