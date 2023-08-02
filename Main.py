@@ -98,7 +98,6 @@ class Itenerary:
     firstname = db.Column(db.String(80), nullable=False)
     lastname = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
 
     def __init__(self, username, email, firstname, lastname, password, role):
         self.username = username
@@ -106,7 +105,6 @@ class Itenerary:
         self.firstname = firstname
         self.lastname = lastname
         self.role = role
-        self.password = generate_password_hash(password)
     pass
 
 
