@@ -1,5 +1,6 @@
 import os
 import re
+import csv
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -169,13 +170,7 @@ def create_default_admin():
         db.session.commit()
 
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    firstname = db.Column(db.String(80), nullable=False)
-    lastname = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
+    
 
     def __init__(self, username, email, firstname, lastname, password, role):
         self.username = username
@@ -185,21 +180,27 @@ def create_default_admin():
         self.role = role
         self.password = generate_password_hash(password)
 
-class Itenerary:
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    firstname = db.Column(db.String(80), nullable=False)
-    lastname = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
+class Itinerary:
+    def __init__(self, title, destination, date, description):
+        self.title = title
+        self.destination = destination
+        self.date = date
+        self.description = description
 
-    def __init__(self, username, email, firstname, lastname, role):
-        self.username = username
-        self.email = email
-        self.firstname = firstname
-        self.lastname = lastname
-        self.role = role
-    pass
+def file_exists(filename):
+    return os.path.isfile(filename)
+
+def save_itinerary(itinerary):
+    # Check if the file exists
+    if not file_exists('instance/itineraries.csv'):
+        with open('instance/itineraries.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Title', 'Destination', 'Date', 'Description'])
+
+    with open('instance/itineraries.csv', mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([itinerary.title, itinerary.destination, itinerary.date, itinerary.description])
+
 
 
 
@@ -244,8 +245,41 @@ def signup():
 def manageusers():
     return render_template('manageusers.html')
 
-@app.route('/admindashboard')
-def adminDashboard():
+@app.route('/adminDashboard', methods=['GET', 'POST'])
+def admin_dashboard():
+    if request.method == 'POST':
+        title = request.form['title']
+        destination = request.form['destination']
+        date = request.form['date']
+        description = request.form['description']
+
+        # Validate form data
+        if not title or not destination or not date or not description:
+            flash('Please fill in all the fields', 'error')
+            return render_template('adminDashboard.html')
+
+        # Check if the itinerary with the same title already exists
+        try:
+            with open('instance/itineraries.csv', mode='r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row[0] == title:
+                        flash('Itinerary with the same title already exists', 'error')
+                        return render_template('adminDashboard.html')
+                # If the loop didn't break, it means the itinerary is unique, so we can save it
+                itinerary = Itinerary(title, destination, date, description)
+                save_itinerary(itinerary)
+
+                # Flash a success message
+                flash('Itinerary saved', 'success')
+        except FileNotFoundError:
+            flash('Itinerary file not found', 'error')
+            return render_template('adminDashboard.html')
+        except Exception as e:
+            flash('An error occurred while processing the request', 'error')
+            print(str(e))
+            return render_template('adminDashboard.html')
+
     return render_template('adminDashboard.html')
 
 @app.route('/logout')
