@@ -4,11 +4,7 @@ import csv
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-<<<<<<< HEAD
-import os
-import re
-=======
->>>>>>> a3c90f6619651ffb665e6e0e09f8406f813894fa
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
