@@ -169,14 +169,6 @@ def create_default_admin():
         db.session.commit()
 
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    firstname = db.Column(db.String(80), nullable=False)
-    lastname = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-
     def __init__(self, username, email, firstname, lastname, password, role):
         self.username = username
         self.email = email
@@ -240,9 +232,35 @@ def myprofile():
 def signup():
     return render_template('signup.html')
 
-@app.route('/manageusers')
+@app.route('/manageusers', methods=['GET', 'POST'])
 def manageusers():
-    return render_template('manageusers.html')
+    if request.method == 'POST':
+        # Get the user ID and new attribute values from the form
+        user_id = request.form['user_id']
+        new_username = request.form['username']
+        new_email = request.form['email']
+        new_firstname = request.form['firstname']
+        new_lastname = request.form['lastname']
+        new_role = request.form['role']
+
+        # Fetch the user from the database by ID
+        user = User.query.get(user_id)
+
+        if user:
+            # Update the user attributes with the new values
+            user.setUsername(new_username)
+            user.setEmail(new_email)
+            user.setFirstName(new_firstname)
+            user.setLastName(new_lastname)
+            user.setRole(new_role)
+
+            # Save the changes to the database
+            db.session.commit()
+            flash('User attributes updated successfully.')
+        else:
+            flash('User not found.')
+    users = User.query.all()
+    return render_template('manageusers.html', users=users)
 
 @app.route('/admindashboard')
 def adminDashboard():
