@@ -1,5 +1,6 @@
 import os
 import re
+import csv
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -169,6 +170,8 @@ def create_default_admin():
         db.session.commit()
 
 
+    
+
     def __init__(self, username, email, firstname, lastname, password, role):
         self.username = username
         self.email = email
@@ -177,21 +180,27 @@ def create_default_admin():
         self.role = role
         self.password = generate_password_hash(password)
 
-class Itenerary:
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    firstname = db.Column(db.String(80), nullable=False)
-    lastname = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
+class Itinerary:
+    def __init__(self, title, destination, date, description):
+        self.title = title
+        self.destination = destination
+        self.date = date
+        self.description = description
 
-    def __init__(self, username, email, firstname, lastname, role):
-        self.username = username
-        self.email = email
-        self.firstname = firstname
-        self.lastname = lastname
-        self.role = role
-    pass
+def file_exists(filename):
+    return os.path.isfile(filename)
+
+def save_itinerary(itinerary):
+    # Check if the file exists
+    if not file_exists('instance/itineraries.csv'):
+        with open('instance/itineraries.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Title', 'Destination', 'Date', 'Description'])
+
+    with open('instance/itineraries.csv', mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([itinerary.title, itinerary.destination, itinerary.date, itinerary.description])
+
 
 
 
@@ -222,6 +231,7 @@ def index():
 
 @app.route ('/itianeraries')
 def itineraries():
+    
     return render_template('sampleIteneraries.html')
 
 @app.route ('/myprofile')
@@ -235,35 +245,85 @@ def signup():
 @app.route('/manageusers', methods=['GET', 'POST'])
 def manageusers():
     if request.method == 'POST':
-        # Get the user ID and new attribute values from the form
-        user_id = request.form['user_id']
-        new_username = request.form['username']
-        new_email = request.form['email']
-        new_firstname = request.form['firstname']
-        new_lastname = request.form['lastname']
-        new_role = request.form['role']
+        # Check if the 'Delete User' button was clicked
+        if 'delete_user_id' in request.form:
+            # Get the user ID to delete from the form
+            user_id_to_delete = request.form['delete_user_id']
 
-        # Fetch the user from the database by ID
-        user = User.query.get(user_id)
+            # Fetch the user from the database by ID
+            user_to_delete = User.query.get(user_id_to_delete)
 
-        if user:
-            # Update the user attributes with the new values
-            user.setUsername(new_username)
-            user.setEmail(new_email)
-            user.setFirstName(new_firstname)
-            user.setLastName(new_lastname)
-            user.setRole(new_role)
+            if user_to_delete:
+                # Delete the user from the database
+                db.session.delete(user_to_delete)
+                db.session.commit()
+                flash('User deleted successfully.')
+            else:
+                flash('User not found.')
 
-            # Save the changes to the database
-            db.session.commit()
-            flash('User attributes updated successfully.')
         else:
-            flash('User not found.')
+            # Get the user ID and new attribute values from the form
+            user_id = request.form['user_id']
+            new_username = request.form['username']
+            new_email = request.form['email']
+            new_firstname = request.form['firstname']
+            new_lastname = request.form['lastname']
+            new_role = request.form['role']
+
+            # Fetch the user from the database by ID
+            user = User.query.get(user_id)
+
+            if user:
+                # Update the user attributes with the new values
+                user.setUsername(new_username)
+                user.setEmail(new_email)
+                user.setFirstName(new_firstname)
+                user.setLastName(new_lastname)
+                user.setRole(new_role)
+
+                # Save the changes to the database
+                db.session.commit()
+                flash('User attributes updated successfully.')
+            else:
+                flash('User not found.')
     users = User.query.all()
     return render_template('manageusers.html', users=users)
 
-@app.route('/admindashboard')
-def adminDashboard():
+@app.route('/adminDashboard', methods=['GET', 'POST'])
+def admin_dashboard():
+    if request.method == 'POST':
+        title = request.form['title']
+        destination = request.form['destination']
+        date = request.form['date']
+        description = request.form['description']
+
+        # Validate form data
+        if not title or not destination or not date or not description:
+            flash('Please fill in all the fields', 'error')
+            return render_template('adminDashboard.html')
+
+        # Check if the itinerary with the same title already exists
+        try:
+            with open('instance/itineraries.csv', mode='r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row[0] == title:
+                        flash('Itinerary with the same title already exists', 'error')
+                        return render_template('adminDashboard.html')
+                # If the loop didn't break, it means the itinerary is unique, so we can save it
+                itinerary = Itinerary(title, destination, date, description)
+                save_itinerary(itinerary)
+
+                # Flash a success message
+                flash('Itinerary saved', 'success')
+        except FileNotFoundError:
+            flash('Itinerary file not found', 'error')
+            return render_template('adminDashboard.html')
+        except Exception as e:
+            flash('An error occurred while processing the request', 'error')
+            print(str(e))
+            return render_template('adminDashboard.html')
+
     return render_template('adminDashboard.html')
 
 @app.route('/logout')
