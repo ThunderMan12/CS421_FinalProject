@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import re
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -35,6 +35,7 @@ class User(db.Model):
     @staticmethod
     def find_by_username(username):
         user = User.query.filter_by(username=username).first()
+        print(type(user))
         return user
     
     def save(self):
@@ -88,13 +89,11 @@ if not os.path.exists('users.db'):
             f.write(f'{self.username}:{self.password}\n')
 
 @app.route('/login', methods=['GET', 'POST'])
-def logins():
-    if request.methed == 'POST':
+def login():
+    if request.method == 'POST':
 
         username = request.form['username']
         password = request.form['password']
-
-       
 
         if not username or not password:
             flash('Please enter both username and password')
@@ -104,7 +103,15 @@ def logins():
 
         if user:
             if user.check_password(password):
-                return redirect(url_for('userprofile', role=user.getRole()))
+                session['username'] = user.getUsername()
+                print(user.getUsername())
+                print("hello")
+                print(user.getRole())
+                if user.getRole() == 'Admin':
+                    print("hell yeah admin")
+                    return render_template('adminIndex.html', user=user)
+                else:
+                    return render_template('index.html', user=user)
 
             else:
                 flash('Invalid password')
@@ -114,7 +121,7 @@ def logins():
             flash('Invalid username')
             return redirect('/login')
     else:
-        return redirect('/login')
+        return render_template('login.html')
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -161,7 +168,7 @@ def create_default_admin():
         db.session.add(new_admin)
         db.session.commit()
 
-class Itenerary:
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -177,8 +184,6 @@ class Itenerary:
         self.lastname = lastname
         self.role = role
         self.password = generate_password_hash(password)
-    pass
-
 
 class Itenerary:
     id = db.Column(db.Integer, primary_key=True)
@@ -202,11 +207,13 @@ class Itenerary:
 
 
 @app.route('/users/<username>')
-def userprofile(username):
-    user = User.find_by_username(username)
+def userProfile():
+    if 'username' in session:
+        username = session['username']
+        user = User.find_by_username(username)
 
     if user:
-        return render_template(login.html, user=user)
+        return render_template('userProfile.html', username=user.getUsername())
 
     else:
 
@@ -214,11 +221,12 @@ def userprofile(username):
 
 @app.route ('/')
 def index():
-    return render_template('index.html')
-
-@app.route ('/login')
-def login():
-    return render_template('login.html')
+    if 'username' in session:
+        username = session['username']
+        user = User.find_by_username(username)
+        return render_template('index.html', user = user)
+    else:
+        return render_template('index.html')
 
 @app.route ('/itianeraries')
 def itineraries():
@@ -236,20 +244,23 @@ def signup():
 def manageusers():
     return render_template('manageusers.html')
 
-@app.route('/adminDashboard')
+@app.route('/admindashboard')
 def adminDashboard():
     return render_template('adminDashboard.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
+@app.route('/contactus')
+def contactUs():
+    return render_template('contactUs.html')
 
+@app.route('/admin')
+def admin():
 
-
-
-
-
-
-
-
+    return render_template('adminIndex.html')
 
 
 if __name__ == '__main__':
