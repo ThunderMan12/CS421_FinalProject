@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Trip Advisor</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin_dashboard.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+    
+        header {
+            background-color: #4285F4;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+    
+        nav {
+            background-color: #f1f1f1;
+            padding: 10px 0;
+            text-align: center;
+        }
+    
+        nav a {
+            color: #4285F4;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    
+        section {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+    
+        section h2 {
+            margin-bottom: 20px;
+        }
+    
+        form {
+            display: grid;
+            grid-gap: 10px;
+        }
+    
+        label {
+            font-weight: bold;
+        }
+    
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    
+        input[type="submit"] {
+            background-color: #4285F4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    
+        input[type="submit"]:hover {
+            background-color: #357AE8;
+        }
+    
+        footer {
+            text-align: center;
+            padding: 10px 0;
+        }
+        #flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 400px;
+            z-index: 9999;
+        }
+
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .flash-success {
+            background-color: #2ecc71;
+        }
+
+        .flash-error {
+            background-color: #e74c3c;
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <h1 style="font-family: 'Product Sans', Arial, sans-serif; font-size: 32px;">Admin Dashboard - Trip Advisor</h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{url_for('signup')}}">Register</a>
+        <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
+        <a href="#">Manage Users</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="flash-messages">
+        {% for message in messages %}
+        <div class="flash-message flash-{{ message[0] }}">
+            {{ message[1] }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <section>
+        <h2>Create New Itinerary</h2>
+        <form action="/adminDashboard" method="POST">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <br>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required>
+            <br>
+            <label for="date">Date:</label>
+            <input type="text" id="date" name="date" required>
+            <br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" cols="50" required></textarea>
+            <br>
+            <!-- Add more fields as needed for additional details -->
+            <input type="submit" value="Create Itinerary">
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2023 Trip Advisor. All rights reserved.
+    </footer>
+</body>
+</html>
+

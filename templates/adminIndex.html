@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin</title>
+    </head>
+    <body>
+        <nav>
+
+            <a href="{{ url_for('admin') }}">Admin Index</a>
+            <a href="{{url_for('manageusers')}}">Manage Users</a>
+            <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
+            <a href="{{url_for('login')}}">Login</a>
+            <a href="{{url_for('logout')}}">Logout</a>
+            <a href="{{url_for('index')}}">Normal Index</a>
+            <a href="{{url_for('signup')}}">Signup</a>
+            <a href="{{url_for('admin_dashboard')}}">Admin Dashboard</a>
+        </nav>
+
+    </body>
+</html>

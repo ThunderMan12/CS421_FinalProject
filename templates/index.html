@@ -15,28 +15,17 @@
     </header>
 
     <nav>
-        {% if current_user == undefined%}
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{url_for('signup')}}">Register</a>
-        <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
-
-        {% else %}
-            {% if current_user.role == 'admin' %}
-            <a href="#">Admin Dashboard</a>
-            <a href="#">Manage Users</a>
+        {% if not user%}
+            <a>Honk</a>
             <a href="{{ url_for('login') }}">Login</a>
             <a href="{{url_for('signup')}}">Register</a>
             <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
-
+            <a href="{{url_for('logout')}}">Logout</a>
         {% else %}
-            <a href="#">User Dashboard</a>
+            <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
             <a href="#">My Trips</a>
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{url_for('signup')}}">Register</a>
-            <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
-
-        {% endif %}
-        <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="#">User Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
         {% endif %}
     </nav>
 
