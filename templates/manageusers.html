@@ -7,6 +7,76 @@
         <title> Manage Users</title>
     </head>
     <body>
+        <section>
+            <h2>Manage Users</h2>
+            <form method="post">
+                <label for="user_id">Select User:</label>
+                <select id="user_id" name="user_id">
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.getUsername() }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <label for="username">New Username:</label>
+                <input type="text" id="username" name="username">
+    
+                <br>
+    
+                <label for="email">New Email:</label>
+                <input type="email" id="email" name="email">
+    
+                <br>
+    
+                <label for="firstname">New First Name:</label>
+                <input type="text" id="firstname" name="firstname">
+    
+                <br>
+    
+                <label for="lastname">New Last Name:</label>
+                <input type="text" id="lastname" name="lastname">
+    
+                <br>
+    
+                <label for="role">New Role:</label>
+                <select id="role" name="role">
+                    <option value="admin">Admin</option>
+                    <option value="member">Member</option>
+                </select>
+    
+                <br>
+    
+                <input type="submit" value="Update Attributes">
+            </form>
+        </section>
 
+        <section>
+            <h3>All Users:</h3>
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Role</th>
+                    <th>Actions</th> <!-- Add a new column for actions -->
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.getUsername() }}</td>
+                    <td>{{ user.getEmail() }}</td>
+                    <td>{{ user.getFirstName() }}</td>
+                    <td>{{ user.getLastName() }}</td>
+                    <td>{{ user.getRole() }}</td>
+                    <td>
+                        <!-- Add a form to delete the user -->
+                        <form method="post">
+                            <input type="hidden" name="delete_user_id" value="{{ user.id }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
     </body>
 </html>
