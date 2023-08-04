@@ -124,31 +124,36 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    username = request.form['username']
-    password = request.form['password']
-    firstname = request.form['firstname']
-    lastname = request.form['lastname']
-    email = request.form['email']
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
 
-    # Check if username already exists
-    existing_user = User.find_by_username(username)
-    if existing_user:
-        return render_template('signup.html', error='Username already exists')
+        # Check if username already exists
+        existing_user = User.find_by_username(username)
+        if existing_user:
+            return render_template('signup.html', error='Username already exists')
 
-    # Verify password requirements
-    if not re.search(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$', password):
-        return render_template('signup.html', error='Invalid password. It must contain at least one lowercase letter, one uppercase letter, and end with a number.')
+        # Verify password requirements
+        if not re.search(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$', password):
+            return render_template('signup.html', error='Invalid password. It must contain at least one lowercase letter, one uppercase letter, and end with a number.')
 
-    try:
-        new_user = User(username=username, password=password, email=email, firstname=firstname,lastname=lastname, role='member')
-        new_user.save()
-    except Exception as e:
-        # Fix the template name to 'signup.html' here
-        return render_template('signup.html', error='An error occurred while creating the account.')
+        try:
+            new_user = User(username=username, password=password, email=email, firstname=firstname, lastname=lastname, role='member')
+            new_user.save()
+        except Exception as e:
+            # Fix the template name to 'signup.html' here
+            return render_template('signup.html', error='An error occurred while creating the account.')
 
-    return redirect(url_for('userProfile', username=username))
+        return redirect(url_for('userProfile', username=username))
+    else:
+        # If it's a GET request, render the signup.html page
+        return render_template('signup.html')
+
 
 def create_default_admin():
     # Check if the default admin account already exists
