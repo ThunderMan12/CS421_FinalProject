@@ -108,7 +108,7 @@ def login():
                 print(user.getUsername())
                 print("hello")
                 print(user.getRole())
-                if user.getRole() == 'Admin':
+                if user.getRole() == 'admin':
                     print("hell yeah admin")
                     return render_template('adminIndex.html', user=user)
                 else:
@@ -148,7 +148,7 @@ def register():
         # Fix the template name to 'signup.html' here
         return render_template('signup.html', error='An error occurred while creating the account.')
 
-    return redirect(url_for('userprofile', username=username))
+    return redirect(url_for('userProfile', username=username))
 
 def create_default_admin():
     # Check if the default admin account already exists
