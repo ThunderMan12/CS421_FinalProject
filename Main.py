@@ -231,8 +231,16 @@ def index():
 
 @app.route ('/itianeraries')
 def itineraries():
+    iteneriaris =[]
+    with open('instance/itineraries.csv', 'r') as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            print(row)
+            iteneriaris.append(row)
+        
+
     
-    return render_template('sampleIteneraries.html')
+    return render_template('sampleIteneraries.html', iteneriaris=iteneriaris)
 
 @app.route ('/myprofile')
 def myprofile():
