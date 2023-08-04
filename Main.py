@@ -342,14 +342,50 @@ def logout():
     session.clear()
     return redirect('/')
 
-@app.route('/contactus')
+@app.route('/contactus', methods=['GET', 'POST'])
 def contactUs():
-    return render_template('contactUs.html')
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        trip_type = request.form['trip_type']
+        destination = request.form['destination']
+        travel_dates = request.form['travel_dates']
+        num_travelers = request.form['number_of_travelers']
+        special_requests = request.form['special_requests']
 
+        if not name or not destination or not travel_dates or not num_travelers:
+            flash('Please fill in all the required fields', 'error')
+            return render_template('contactUs.html')
+
+        with open('instance/trip_requests.txt', 'a') as file:
+            file.write(f"Name: {name}\n")
+            file.write(f"Email: {email}\n")
+            file.write(f"Phone: {phone}\n")
+            file.write(f"Trip Type: {trip_type}\n")
+            file.write(f"Destination: {destination}\n")
+            file.write(f"Travel Dates: {travel_dates}\n")
+            file.write(f"Number of Travelers: {num_travelers}\n")
+            file.write(f"Special Requests: {special_requests}\n")
+            file.write("\n")
+
+        # You can also add a flash message here to show a success message
+        flash('Trip request submitted successfully!', 'success')
+
+        # Redirect to the contactUs page with the success flash message
+        return redirect(url_for('contactUs'))
+
+
+    # If it's a GET request, simply render the contactUs.html page
+    return render_template('contactUs.html')
+        
+
+    
 @app.route('/admin')
 def admin():
 
     return render_template('adminIndex.html')
+
 
 
 if __name__ == '__main__':
