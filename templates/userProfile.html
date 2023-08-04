@@ -8,17 +8,12 @@
 </head>
 <body>
     <h2>User Profile</h2>
-    <p><strong>First Name:</strong> {{ user.first_name }}</p>
-    <p><strong>Last Name:</strong> {{ user.last_name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Phone:</strong> {{ user.phone }}</p>
-    <p><strong>Address:</strong> {{ user.address }}</p>
-    <!-- You can display more user profile information here, retrieved from the database -->
-    <h3>Upcoming Trips</h3>
-    <ul>
-        {% for trip in upcoming_trips %}
-            <li>{{ trip.destination }} - {{ trip.date }}</li>
-        {% endfor %}
-    </ul>
+    <form method="post">
+        <p><strong>Username:</strong> <input type="text" name="username" value="{{ user.getUsername() }}"></p>
+        <p><strong>First Name:</strong> <input type="text" name="firstname" value="{{ user.getFirstName() }}"></p>
+        <p><strong>Last Name:</strong> <input type="text" name="lastname" value="{{ user.getLastName() }}"></p>
+        <p><strong>Email:</strong> <input type="email" name="email" value="{{ user.getEmail() }}"></p>
+        <input type="submit" value="Update">
+    </form>
 </body>
 </html>

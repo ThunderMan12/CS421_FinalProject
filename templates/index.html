@@ -18,13 +18,13 @@
         {% if not user%}
             <a>Honk</a>
             <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{url_for('signup')}}">Register</a>
+            <a href="{{url_for('register')}}">Register</a>
             <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
             <a href="{{url_for('logout')}}">Logout</a>
         {% else %}
             <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
             <a href="{{url_for('contactUs')}}">Contact Us</a>
-            <a href="{{url_for('myprofile')}}">User Dashboard</a>
+            <a href="{{url_for('userProfile')}}">User Dashboard</a>
             <a href="{{url_for('logout') }}">Logout</a>
         {% endif %}
     </nav>

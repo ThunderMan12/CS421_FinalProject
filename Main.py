@@ -203,23 +203,6 @@ def save_itinerary(itinerary):
 
 
 
-
-
-
-
-@app.route('/users/<username>')
-def userProfile():
-    if 'username' in session:
-        username = session['username']
-        user = User.find_by_username(username)
-
-    if user:
-        return render_template('userProfile.html', username=user.getUsername())
-
-    else:
-
-        return render_template('error.html', error='User not found')
-
 @app.route ('/')
 def index():
     if 'username' in session:
@@ -228,6 +211,33 @@ def index():
         return render_template('index.html', user = user)
     else:
         return render_template('index.html')
+
+@app.route('/userprofile', methods=['GET', 'POST'])
+def userProfile():
+    if 'username' in session:
+        user = User.find_by_username(session['username'])
+
+        if request.method == 'POST':
+            # Handle form submission for updating user attributes
+            new_firstname = request.form['firstname']
+            new_lastname = request.form['lastname']
+            new_email = request.form['email']
+            new_username = request.form['username']
+
+            # Update the user's attributes
+            user.setFirstName(new_firstname)
+            user.setLastName(new_lastname)
+            user.setEmail(new_email)
+            user.setUsername(new_username)
+
+            # Save the changes to the database
+            db.session.commit()
+
+    else:
+        flash('Unauthorized access. Please log in to view your profile.')
+        return redirect('/login')
+
+    return render_template('userProfile.html', user=user)
 
 @app.route ('/itianeraries')
 def itineraries():
@@ -242,13 +252,6 @@ def itineraries():
     
     return render_template('sampleIteneraries.html', iteneriaris=iteneriaris)
 
-@app.route ('/myprofile')
-def myprofile():
-    return render_template('userProfile.html')
-
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
 
 @app.route('/manageusers', methods=['GET', 'POST'])
 def manageusers():
