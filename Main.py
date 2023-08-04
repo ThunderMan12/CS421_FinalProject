@@ -206,6 +206,7 @@ def save_itinerary(itinerary):
 
 
 
+
 @app.route('/users/<username>')
 def userProfile():
     if 'username' in session:
