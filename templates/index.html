@@ -23,9 +23,9 @@
             <a href="{{url_for('logout')}}">Logout</a>
         {% else %}
             <a href="{{url_for('itineraries')}}">Sample Itineraries</a>
-            <a href="#">My Trips</a>
-            <a href="#">User Dashboard</a>
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{url_for('contactUs')}}">Contact Us</a>
+            <a href="{{url_for('myprofile')}}">User Dashboard</a>
+            <a href="{{url_for('logout') }}">Logout</a>
         {% endif %}
     </nav>
 
