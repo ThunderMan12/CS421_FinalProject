@@ -250,9 +250,52 @@ def myprofile():
 def signup():
     return render_template('signup.html')
 
-@app.route('/manageusers')
+@app.route('/manageusers', methods=['GET', 'POST'])
 def manageusers():
-    return render_template('manageusers.html')
+    if request.method == 'POST':
+        # Check if the 'Delete User' button was clicked
+        if 'delete_user_id' in request.form:
+            # Get the user ID to delete from the form
+            user_id_to_delete = request.form['delete_user_id']
+
+            # Fetch the user from the database by ID
+            user_to_delete = User.query.get(user_id_to_delete)
+
+            if user_to_delete:
+                # Delete the user from the database
+                db.session.delete(user_to_delete)
+                db.session.commit()
+                flash('User deleted successfully.')
+            else:
+                flash('User not found.')
+
+        else:
+            # Get the user ID and new attribute values from the form
+            user_id = request.form['user_id']
+            new_username = request.form['username']
+            new_email = request.form['email']
+            new_firstname = request.form['firstname']
+            new_lastname = request.form['lastname']
+            new_role = request.form['role']
+
+            # Fetch the user from the database by ID
+            user = User.query.get(user_id)
+
+            if user:
+                # Update the user attributes with the new values
+                user.setUsername(new_username)
+                user.setEmail(new_email)
+                user.setFirstName(new_firstname)
+                user.setLastName(new_lastname)
+                user.setRole(new_role)
+
+                # Save the changes to the database
+                db.session.commit()
+                flash('User attributes updated successfully.')
+            else:
+                flash('User not found.')
+    users = User.query.all()
+    return render_template('manageusers.html', users=users)
 
 @app.route('/adminDashboard', methods=['GET', 'POST'])
 def admin_dashboard():
